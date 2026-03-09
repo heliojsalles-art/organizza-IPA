@@ -1,6 +1,4 @@
-"use client"
-
-import { Toaster as Sonner, ToasterProps } from "sonner"
+import { Toaster as Sonner, type ToasterProps } from "sonner";
 
 const Toaster = ({ ...props }: ToasterProps) => {
   return (
@@ -9,12 +7,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
       position="top-center"
       richColors
       closeButton
-      toastOptions={{
-        duration: 3000
-      }}
+      toastOptions={{ duration: 3000 }}
       {...props}
     />
-  )
-}
+  );
+};
 
-export { Toaster }
+export { Toaster };
