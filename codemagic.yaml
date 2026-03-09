@@ -1,74 +1,43 @@
 workflows:
-  ios-unsigned-simulator:
-    name: Organizza iOS Unsigned
-    instance_type: mac_mini_m2
-    max_build_duration: 60
+  organiza_ios_sideloadly:
+    name: Organiza iOS Sideloadly IPA
+    max_build_duration: 90
 
     environment:
+      node: 20
       xcode: latest
       cocoapods: default
-      vars:
-        APP_NAME: "Organizza"
-        BUNDLE_ID: "com.heliosalles.organizza"
-
-    triggering:
-      events:
-        - push
-      branch_patterns:
-        - pattern: main
-          include: true
-          source: true
-
-    cache:
-      cache_paths:
-        - $HOME/.npm
-        - $HOME/Library/Caches/CocoaPods
-        - ~/Library/Developer/Xcode/DerivedData
 
     scripts:
-      - name: Show versions
-        script: |
-          node -v
-          npm -v
-          xcodebuild -version
-          pod --version
-
-      - name: Install dependencies
-        script: |
-          npm install
-
-      - name: Build web app
-        script: |
-          npm run build
-
-      - name: Create iOS platform if missing
-        script: |
-          if [ ! -d ios/App ]; then
-            npx cap add ios
-          fi
-
-      - name: Sync Capacitor iOS
-        script: |
-          npx cap sync ios
-
-      - name: Install CocoaPods
-        script: |
+      - npm install
+      - npm run build
+      - npm install @capacitor/ios@7 @capacitor/core@7 @capacitor/cli@7
+      - npx cap add ios || true
+      - npx cap sync ios
+      - |
           cd ios/App
           pod install
-
-      - name: Build unsigned iOS app for simulator
-        script: |
-          xcodebuild build \
-            -workspace ios/App/App.xcworkspace \
+      - |
+          cd ios/App
+          xcodebuild \
+            -workspace App.xcworkspace \
             -scheme App \
-            -sdk iphonesimulator \
-            -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
-            CODE_SIGN_IDENTITY="" \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGN_IDENTITY="" \
+            build
+      - |
+          APP_PATH=$(find ios/App/build/Build/Products/Debug-iphoneos -maxdepth 1 -name "*.app" | head -n 1)
+          rm -rf Payload Organiza.ipa
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          cd Payload
+          zip -r ../Organiza.ipa .
+          cd ..
 
     artifacts:
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
-      - /tmp/xcodebuild_logs/*.log
+      - Organiza.ipa
+      - ios/App/build/Build/Products/Debug-iphoneos/*.app
