@@ -1,43 +1,109 @@
 workflows:
-  organiza_ios_sideloadly:
-    name: Organiza iOS Sideloadly IPA
-    max_build_duration: 90
+  ios_unsigned_ipa:
+    name: Organiza IPA
+    instance_type: mac_mini_m2
+    max_build_duration: 60
 
     environment:
       node: 20
       xcode: latest
       cocoapods: default
 
+    cache:
+      cache_paths:
+        - $HOME/.npm
+        - $HOME/Library/Caches/CocoaPods
+
     scripts:
-      - npm install
-      - npm run build
-      - npm install @capacitor/ios@7 @capacitor/core@7 @capacitor/cli@7
-      - npx cap add ios || true
-      - npx cap sync ios
-      - |
+      - name: Show versions
+        script: |
+          node -v
+          npm -v
+          xcodebuild -version
+          pod --version
+
+      - name: Install dependencies
+        script: |
+          npm install
+          npm install @capacitor/ios@7 @capacitor/core@7 @capacitor/cli@7
+
+      - name: Ensure capacitor config exists
+        script: |
+          rm -f capacitor.config.ts
+          rm -f capacitor.config.js
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.heliosalles.organiza",
+            "appName": "Organiza",
+            "webDir": "dist",
+            "server": {
+              "iosScheme": "https"
+            }
+          }
+          EOF
+
+      - name: Build web app
+        script: |
+          npm run build
+
+      - name: Recreate iOS platform
+        script: |
+          rm -rf ios
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Install CocoaPods
+        script: |
           cd ios/App
           pod install
-      - |
+
+      - name: Build iOS app for device
+        script: |
           cd ios/App
+          rm -rf build
           xcodebuild \
             -workspace App.xcworkspace \
             -scheme App \
-            -configuration Debug \
+            -configuration Release \
             -sdk iphoneos \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
             build
-      - |
-          APP_PATH=$(find ios/App/build/Build/Products/Debug-iphoneos -maxdepth 1 -name "*.app" | head -n 1)
-          rm -rf Payload Organiza.ipa
-          mkdir -p Payload
-          cp -R "$APP_PATH" Payload/
-          cd Payload
-          zip -r ../Organiza.ipa .
-          cd ..
+
+      - name: Create IPA
+        script: |
+          APP_PATH=$(find "$CM_BUILD_DIR/ios/App/build" -type d -path "*Release-iphoneos/App.app" | head -n 1)
+
+          echo "APP_PATH=$APP_PATH"
+
+          if [ -z "$APP_PATH" ]; then
+            echo "ERRO: App.app não encontrado"
+            find "$CM_BUILD_DIR/ios/App/build" -type d -name "*.app" || true
+            exit 1
+          fi
+
+          rm -rf /tmp/ipa_build
+          mkdir -p /tmp/ipa_build/Payload
+          cp -R "$APP_PATH" /tmp/ipa_build/Payload/App.app
+
+          cd /tmp/ipa_build
+          /usr/bin/zip -qry /tmp/Organiza.ipa Payload
+
+          echo "=== Arquivo final ==="
+          ls -lah /tmp/Organiza.ipa
+          echo "=== Conteúdo do IPA ==="
+          unzip -l /tmp/Organiza.ipa | head -40
+
+      - name: Verify files
+        script: |
+          echo "=== Arquivos em /tmp ==="
+          ls -lah /tmp | grep -E "Organiza|ipa" || true
+          echo "=== IPA existe? ==="
+          test -f /tmp/Organiza.ipa && echo "IPA OK"
 
     artifacts:
-      - Organiza.ipa
-      - ios/App/build/Build/Products/Debug-iphoneos/*.app
+      - /tmp/Organiza.ipa
+      - /tmp/xcodebuild_logs/*.log
