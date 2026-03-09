@@ -10,8 +10,6 @@ workflows:
       vars:
         APP_NAME: "Organizza"
         BUNDLE_ID: "com.heliosalles.organizza"
-        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
-        XCODE_SCHEME: "App"
 
     triggering:
       events:
@@ -64,7 +62,7 @@ workflows:
             -workspace ios/App/App.xcworkspace \
             -scheme App \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
