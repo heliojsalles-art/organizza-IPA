@@ -1,16 +1,12 @@
-import { Toaster as Sonner, type ToasterProps } from "sonner";
+import { Toaster as Sonner } from "sonner";
 
-const Toaster = ({ ...props }: ToasterProps) => {
+export function Toaster() {
   return (
     <Sonner
       theme="system"
       position="top-center"
       richColors
       closeButton
-      toastOptions={{ duration: 3000 }}
-      {...props}
     />
   );
-};
-
-export { Toaster };
+}
