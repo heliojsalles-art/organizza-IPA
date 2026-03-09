@@ -1,12 +1,45 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import TabBar from "@/components/TabBar";
+import RemindersPage from "@/pages/RemindersPage";
+import ListsPage from "@/pages/ListsPage";
+import FinancesPage from "@/pages/FinancesPage";
+import SettingsPage from "@/pages/SettingsPage";
+import { AnimatePresence, motion } from "framer-motion";
+
+type Tab = "reminders" | "lists" | "finances" | "settings";
 
 const Index = () => {
+  const [tab, setTab] = useState<Tab>("reminders");
+
+  const pages: Record<Tab, React.ReactNode> = {
+    reminders: <RemindersPage />,
+    lists: <ListsPage />,
+    finances: <FinancesPage />,
+    settings: <SettingsPage />,
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen max-w-lg mx-auto relative bg-background">
+      {/* Decorative gradient blobs */}
+      <div className="fixed top-0 left-0 right-0 h-80 pointer-events-none overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-primary/8 blur-3xl" />
+        <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-accent/30 blur-3xl" />
       </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={tab}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}
+          className="relative z-10 h-screen flex flex-col"
+        >
+          {pages[tab]}
+        </motion.div>
+      </AnimatePresence>
+
+      <TabBar active={tab} onChange={setTab} />
     </div>
   );
 };
