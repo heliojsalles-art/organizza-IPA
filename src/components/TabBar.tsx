@@ -1,7 +1,7 @@
-import { CheckSquare, List, Wallet, Settings } from "lucide-react";
+import { CheckSquare, List, Wallet, Settings, Home } from "lucide-react";
 import { motion } from "framer-motion";
 
-type Tab = 'reminders' | 'lists' | 'finances' | 'settings';
+type Tab = "home" | "reminders" | "lists" | "finances" | "settings";
 
 interface TabBarProps {
   active: Tab;
@@ -9,10 +9,11 @@ interface TabBarProps {
 }
 
 const tabs: { id: Tab; label: string; icon: typeof CheckSquare }[] = [
-  { id: 'reminders', label: 'Lembretes', icon: CheckSquare },
-  { id: 'lists', label: 'Listas', icon: List },
-  { id: 'finances', label: 'Finanças', icon: Wallet },
-  { id: 'settings', label: 'Ajustes', icon: Settings },
+  { id: "home", label: "Início", icon: Home },
+  { id: "reminders", label: "Lembretes", icon: CheckSquare },
+  { id: "lists", label: "Listas", icon: List },
+  { id: "finances", label: "Finanças", icon: Wallet },
+  { id: "settings", label: "Ajustes", icon: Settings },
 ];
 
 const TabBar = ({ active, onChange }: TabBarProps) => {
@@ -26,22 +27,22 @@ const TabBar = ({ active, onChange }: TabBarProps) => {
             <button
               key={tab.id}
               onClick={() => onChange(tab.id)}
-              className="flex flex-col items-center gap-0.5 relative px-4 py-1"
+              className="flex flex-col items-center gap-0.5 relative px-3 py-1"
             >
               {isActive && (
                 <motion.div
                   layoutId="tab-indicator"
                   className="absolute -top-1 w-8 h-1 rounded-full bg-primary"
-                  transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
                 />
               )}
               <Icon
-                size={22}
-                className={isActive ? 'text-primary' : 'text-muted-foreground'}
+                size={20}
+                className={isActive ? "text-primary" : "text-muted-foreground"}
               />
               <span
-                className={`text-[10px] font-medium ${
-                  isActive ? 'text-primary' : 'text-muted-foreground'
+                className={`text-[9px] font-medium ${
+                  isActive ? "text-primary" : "text-muted-foreground"
                 }`}
               >
                 {tab.label}
