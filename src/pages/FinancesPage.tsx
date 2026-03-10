@@ -30,6 +30,8 @@ const FinancesPage = () => {
   // Category form
   const [newCatName, setNewCatName] = useState("");
   const [newCatType, setNewCatType] = useState<"income" | "expense">("expense");
+  const [editingCat, setEditingCat] = useState<FinanceCategory | null>(null);
+  const [editCatName, setEditCatName] = useState("");
 
   const persistEntries = (data: FinanceEntry[]) => {
     setEntries(data);
