@@ -154,7 +154,7 @@ const FinancesPage = () => {
   if (showCategories) {
     return (
       <div className="flex flex-col h-full">
-        <div className="flex items-center gap-2 px-3 safe-area-top pt-4 pb-2">
+        <div className="flex items-center gap-2 px-3 safe-area-top pt-2 pb-2">
           <button onClick={() => setShowCategories(false)} className="p-2 rounded-xl text-primary">
             <X size={20} />
           </button>
