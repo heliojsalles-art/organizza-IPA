@@ -11,10 +11,10 @@
     "moduleResolution": "Node",
     "noEmit": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ]
     },
     "resolveJsonModule": true,
