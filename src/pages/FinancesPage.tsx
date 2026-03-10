@@ -111,6 +111,22 @@ const FinancesPage = () => {
     persistCategories(categories.filter((c) => c.id !== id));
   };
 
+  const startEditCat = (cat: FinanceCategory) => {
+    setEditingCat(cat);
+    setEditCatName(cat.name);
+  };
+
+  const saveEditCat = () => {
+    if (!editingCat || !editCatName.trim()) return;
+    persistCategories(
+      categories.map((c) =>
+        c.id === editingCat.id ? { ...c, name: editCatName.trim() } : c
+      )
+    );
+    setEditingCat(null);
+    setEditCatName("");
+  };
+
   const filteredCats = categories.filter((c) => c.type === formType);
 
   const { totalIncome, totalExpense } = useMemo(() => {
