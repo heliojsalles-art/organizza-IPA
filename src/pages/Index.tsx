@@ -1,22 +1,16 @@
 import { useState } from "react";
 import TabBar from "@/components/TabBar";
+import DashboardPage from "@/pages/DashboardPage";
 import RemindersPage from "@/pages/RemindersPage";
 import ListsPage from "@/pages/ListsPage";
 import FinancesPage from "@/pages/FinancesPage";
 import SettingsPage from "@/pages/SettingsPage";
 import { AnimatePresence, motion } from "framer-motion";
 
-type Tab = "reminders" | "lists" | "finances" | "settings";
+type Tab = "home" | "reminders" | "lists" | "finances" | "settings";
 
 const Index = () => {
-  const [tab, setTab] = useState<Tab>("reminders");
-
-  const pages: Record<Tab, React.ReactNode> = {
-    reminders: <RemindersPage />,
-    lists: <ListsPage />,
-    finances: <FinancesPage />,
-    settings: <SettingsPage />,
-  };
+  const [tab, setTab] = useState<Tab>("home");
 
   return (
     <div className="min-h-screen max-w-lg mx-auto relative bg-background">
@@ -35,7 +29,11 @@ const Index = () => {
           transition={{ duration: 0.2 }}
           className="relative z-10 h-screen flex flex-col"
         >
-          {pages[tab]}
+          {tab === "home" && <DashboardPage onNavigate={(t) => setTab(t)} />}
+          {tab === "reminders" && <RemindersPage />}
+          {tab === "lists" && <ListsPage />}
+          {tab === "finances" && <FinancesPage />}
+          {tab === "settings" && <SettingsPage />}
         </motion.div>
       </AnimatePresence>
 
