@@ -207,10 +207,35 @@ const FinancesPage = () => {
                     key={cat.id}
                     className="glass-panel rounded-2xl p-3 flex items-center justify-between mb-2"
                   >
-                    <span className="text-sm text-foreground">{cat.name}</span>
-                    <button onClick={() => removeCategory(cat.id)} className="p-1 text-muted-foreground/50">
-                      <Trash2 size={14} />
-                    </button>
+                    {editingCat?.id === cat.id ? (
+                      <div className="flex items-center gap-2 flex-1">
+                        <input
+                          value={editCatName}
+                          onChange={(e) => setEditCatName(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && saveEditCat()}
+                          className="flex-1 bg-transparent text-sm outline-none border-b border-primary/30"
+                          autoFocus
+                        />
+                        <button onClick={saveEditCat} className="p-1 text-primary">
+                          <Check size={14} />
+                        </button>
+                        <button onClick={() => setEditingCat(null)} className="p-1 text-muted-foreground/50">
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-sm text-foreground">{cat.name}</span>
+                        <div className="flex items-center gap-1">
+                          <button onClick={() => startEditCat(cat)} className="p-1 text-muted-foreground/50">
+                            <Edit3 size={14} />
+                          </button>
+                          <button onClick={() => removeCategory(cat.id)} className="p-1 text-muted-foreground/50">
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 ))}
             </div>

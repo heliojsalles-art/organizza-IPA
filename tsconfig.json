@@ -24,8 +24,7 @@
     "useDefineForClassFields": true
   },
   "include": [
-    "src",
-    "main.tsx",
-    "vite.config.ts"
+    "./src",
+    "./vite.config.ts"
   ]
 }
