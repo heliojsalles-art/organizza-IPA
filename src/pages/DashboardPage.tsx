@@ -118,7 +118,7 @@ const DashboardPage = ({ onNavigate }: DashboardPageProps) => {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="safe-area-top px-6 pt-2 pb-4">
+      <div className="safe-area-top px-6 pt-6 pb-4">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
