@@ -117,8 +117,8 @@ const DashboardPage = ({ onNavigate }: DashboardPageProps) => {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="safe-area-top px-6 pt-6 pb-4">
+      {/* Header - pt-14 garante espaço abaixo da barra de status do iPhone */}
+      <div className="safe-area-top px-6 pt-14 pb-2">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -131,8 +131,8 @@ const DashboardPage = ({ onNavigate }: DashboardPageProps) => {
         </motion.div>
       </div>
 
-      {/* Widgets */}
-      <div className="flex-1 overflow-y-auto px-5 pb-24">
+      {/* Widgets - centralizados verticalmente */}
+      <div className="flex-1 overflow-y-auto px-5 pb-24 flex flex-col justify-center">
         <motion.div
           className="space-y-3"
           initial="hidden"
